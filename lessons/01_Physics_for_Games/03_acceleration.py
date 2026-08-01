@@ -22,6 +22,7 @@ d_t = 1 / FPS  # Time step for physics calculations
 
 mass = 2.0 # Mass of the square, used to calculate acceleration
 velocity = 0
+velocity2 = 100
 
 # Movement direction: 1 for right, -1 for left
 direction = 1
@@ -41,22 +42,26 @@ while running:
     # Calculate the spring force, accounting for mass (F = -k*x)
     # Force divided by mass gives acceleration (F = ma → a = F/m)
     a = (-K * (x_pos - (SCREEN_WIDTH-SQUARE_SIZE) // 2)) / mass
+    a2 = (-K * (y_pos - (SCREEN_HEIGHT-SQUARE_SIZE) // 2)) / mass
 
     # Update the velocity with the acceleration. Notice that we change
     # the velocity by adding the acceleration, not setting it to the acceleration, 
     # and we change it a bit each frame. 
     velocity += a * d_t
+    velocity2 += a2 * d_t
     
     # Update the position with the velocity. Like with the velocity, we change
     # the position by adding the velocity, not setting it to the velocity, and
     # we change it a bit each frame.
     x_pos += velocity * d_t
+    y_pos += velocity2 * d_t
 
     # Fill the screen with black (clears previous frame)
     screen.fill((0, 0, 0))
 
     # Draw the red square
     pygame.draw.rect(screen, SQUARE_COLOR, (x_pos, y_pos, SQUARE_SIZE, SQUARE_SIZE))
+    pygame.draw.line(screen, (0,0,255), (x_pos, y_pos), (a/K + x_pos, a2/K + y_pos))
 
     # Update the display
     pygame.display.flip()

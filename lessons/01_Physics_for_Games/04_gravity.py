@@ -12,7 +12,6 @@ from dataclasses import dataclass
 # Initialize Pygame
 pygame.init()
 
-
 # This is a data class, one way of storing settings and constants for a game.
 # We will create an instance of the data class, but since there is only one of
 # them, we could also use the class directly, like GameSettings.screen_width.
@@ -48,7 +47,7 @@ player = pygame.Rect(settings.player_x,
                      settings.player_size, settings.player_size)
 
 is_jumping = False
-
+d_v_y = 0
 # Main game loop
 running = True
 clock = pygame.time.Clock()
@@ -89,6 +88,10 @@ while running:
         player.bottom = settings.screen_height 
         d_v_y = 0
         is_jumping = False
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_SPACE] and not is_jumping:
+         d_v_y = -settings.jump_velocity
+        is_jumping = True
 
     # Draw everything
     screen.fill(settings.white)
