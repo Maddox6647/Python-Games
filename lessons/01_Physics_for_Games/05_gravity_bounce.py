@@ -22,7 +22,8 @@ class GameSettings:
     jump_velocity_y: float = 200.0  # Initial jump velocity in y direction
     jump_velocity_x: float = 100.0  # Initial jump velocity in x direction
     d_t: float = 1.0/30  # Time step for physics calculations
-
+    drag: float = 0.98  
+    elasticity: float = 0.75  
 # Initialize Pygame
 pygame.init()
 
@@ -55,16 +56,25 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE and not is_jumping:
+                is_jumping = True
+
     # Continuously jump. If the square is not jumping, make it jump
     if is_jumping is False:
         # Jumping means that the square is going up. The top of the 
         # screen is y=0, and the bottom is y=screen_height. So, to go up,
         # we need to have a negative y velocity
-        
         velocity_y = -settings.jump_velocity_y
-        velocity_x = settings.jump_velocity_x * x_direction
-        
-        is_jumping = True
+
+        if pygame.key.get_pressed()[pygame.K_a]:
+            velocity_x = -settings.jump_velocity_x
+        elif pygame.key.get_pressed()[pygame.K_d]:
+            velocity_x = settings.jump_velocity_x
+        else:
+            velocity_x = 0
+       
+   
         
     else: # the square is jumping
         # Update square position. Gravity is always pulling the square down,
@@ -79,27 +89,52 @@ while running:
         # we change it a bit each frame.
         y_pos += velocity_y * settings.d_t
         x_pos += velocity_x * settings.d_t
-        
+
+        velocity_x *= settings.drag
+        velocity_y *= settings.drag
+
+
+        if abs(velocity_x) < 0.1:
+            velocity_x = 0
+
+        if abs(velocity_y) < 0.1:
+            velocity_y = 0
+
     # If the square hits one side of the screen or the other, bounce the square
     if x_pos <= 0 or x_pos + settings.square_size >= settings.screen_width:
-        velocity_x = -velocity_x
+        velocity_x = -velocity_x * settings.elasticity
+
+        if x_pos <= 0:
+            x_pos = 0
+        else:
+            x_pos = settings.screen_width - settings.square_size
+       
         
-        # Update direction tracking
-        x_direction = -x_direction 
         # This way is more reliable, since it will always be 1 or -1 and direction is tied to velocity
         if velocity_x != 0:
             x_direction = int(velocity_x / abs(velocity_x))
 
     # If the square hits the top of the screen, bounce the square
     if y_pos <= 0:
-        velocity_y = -velocity_y
+        y_pos = 0
+        velocity_y = -velocity_y * settings.elasticity
 
     # If the square hits the ground, stop the square from falling.
     if y_pos + settings.square_size > settings.screen_height:
         y_pos = settings.screen_height - settings.square_size
-        velocity_y = 0
-        velocity_x = 0
-        is_jumping = False
+
+        if velocity_y > 0:
+            velocity_y = -velocity_y * settings.elasticity
+
+
+        if abs(velocity_y) < 0.1:
+            velocity_y = 0
+
+        if abs(velocity_x) < 0.1:
+            velocity_x = 0
+
+        if velocity_x == 0 and velocity_y == 0:
+            is_jumping = False
 
     # Fill the screen with background color (clears previous frame)
     screen.fill(settings.background_color)
