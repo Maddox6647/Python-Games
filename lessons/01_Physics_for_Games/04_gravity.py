@@ -90,7 +90,7 @@ while running:
         is_jumping = False
     keys = pygame.key.get_pressed()
     if keys[pygame.K_SPACE] and not is_jumping:
-         d_v_y = -settings.jump_velocity
+        d_v_y = -settings.jump_velocity
         is_jumping = True
 
     # Draw everything
