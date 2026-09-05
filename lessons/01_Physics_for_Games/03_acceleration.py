@@ -18,7 +18,7 @@ pygame.display.set_caption("Accelerating Red Square")
 x_pos = 20
 y_pos = (SCREEN_HEIGHT - SQUARE_SIZE) // 2
 
-d_t = 1 / FPS  # Time step for physics calculations
+d_t = 1 / FPS  # Time step for physics calculations.
 
 mass = 2.0 # Mass of the square, used to calculate acceleration
 velocity = 0
