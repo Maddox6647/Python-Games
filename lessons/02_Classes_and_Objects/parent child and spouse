@@ -20,7 +20,7 @@ class Parent(Person):
 
     def __init__(self, name: str, age: int, spouse=None):
         """Initializes a new Parent object."""
-        super().__init__(name, age)  # Call Person.__init__ to initialize the name and age attributes
+        super().__init__(name, age)  # Call Person.__init__ to initialize the name and age attribute(s)
         self.children = []
 
         # Set our spose but also set the spouse's spouse to us
@@ -41,7 +41,7 @@ class Parent(Person):
         if self.spouse:
             print(f"My spouse is {self.spouse.name}")
 
-        print(f"I have {len(self.children)} children.")
+        print(f".   I have {len(self.children)} children.")
 
         if len(self.children) > 0:
             print("Their names are:")
