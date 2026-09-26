@@ -8,7 +8,7 @@ from jtlgames.vector20 import Vector20Factory
 pygame.init()
 
 # Screen setup
-screen_width = 800
+screen_width = 600
 screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Vector with Arrow")
@@ -18,18 +18,19 @@ Vector20, draw_v20, draw_grid = Vector20Factory(screen_width, screen_height, 20)
 draw_grid(screen)
 
 # Create some vectors
-v0 = Vector20(0,0)
-v1 = Vector20(8, 8)  
-v2 = Vector20(3, -12)  
-v3 = Vector20(-4, -2)  
-v4 = Vector20(-12, 0) 
-v5 = Vector20(0, 12)
 
-start = draw_v20(screen, v0, v1)
-start = draw_v20(screen, start, v2)
+v1 = Vector20(12, 0)  
+v2 = Vector20(0, -12)  
+v3 = Vector20(-12, 0) 
+v4 = Vector20(0, 12)
+
+
+start = draw_v20(screen, v1, v2)
+
 start = draw_v20(screen, start, v3)
 start = draw_v20(screen, start, v4)
-start = draw_v20(screen, start, v5)
+start = draw_v20(screen, start, v1)
+
 
 # Update display
 pygame.display.flip()

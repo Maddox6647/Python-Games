@@ -8,17 +8,17 @@ pygame.init()
 class Settings:
     """A class to store all settings for the game."""
     SCREEN_WIDTH = 800
-    SCREEN_HEIGHT = 600
-    PLAYER_SIZE = 20
-    LINE_COLOR = (0, 255, 0)
-    PLAYER_COLOR = (0, 0, 255)
-    BACKGROUND_COLOR = (255, 255, 255)
-    TEXT_COLOR = (0, 0, 0)
+    SCREEN_HEIGHT = 500
+    PLAYER_SIZE = 100
+    LINE_COLOR = (255, 10, 255)
+    PLAYER_COLOR = (0, 122, 252)
+    BACKGROUND_COLOR = (255, 150, 10)
+    TEXT_COLOR = (70, 10, 40)
     FPS = 30
     ANGLE_CHANGE = 3
     LENGTH_CHANGE = 5
-    INITIAL_LENGTH = 100
-    FONT_SIZE = 24
+    INITIAL_LENGTH = 175
+    FONT_SIZE = 99
 
 # Initialize screen
 screen = pygame.display.set_mode((Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT))
