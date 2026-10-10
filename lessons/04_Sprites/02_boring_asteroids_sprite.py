@@ -1,3 +1,4 @@
+
 import pygame
 import math
 
@@ -32,25 +33,32 @@ class Spaceship(pygame.sprite.Sprite):
         self.angle = 0
         self.original_image = self.create_spaceship_image()
 
+        # Velocity represents the speed and direction of the spaceship.
         self.velocity = pygame.Vector2(0, 0)
 
-        # For Sprites, the image and rect attributes are part of the Sprite class
-        # and are important. The image is the surface that will be drawn on the screen
+        # Acceleration controls how much the spaceship speeds up.
+        self.acceleration = 0.2
 
-        self.image = self.original_image.copy() 
+        # For Sprites, the image and rect attributes are part of the Sprite class
+        # and are important. The image is the surface that will be drawn on the screen.
+
+        self.image = self.original_image.copy()
         self.rect = self.image.get_rect(center=position)
 
-        # These values help us limit the rate of fire
+        # These values help us limit the rate of fire.
         self.last_shot = pygame.time.get_ticks()
-        self.shoot_delay = self.settings.shoot_delay  
+        self.shoot_delay = self.settings.shoot_delay
 
     def create_spaceship_image(self):
         """Creates the spaceship shape as a surface."""
-        image = pygame.Surface( (self.settings.triangle_size * 2, self.settings.triangle_size * 2),pygame.SRCALPHA)
+        image = pygame.Surface(
+            (self.settings.triangle_size * 2, self.settings.triangle_size * 2),
+            pygame.SRCALPHA,
+        )
         points = [
             (self.settings.triangle_size, 0),  # top point
             (0, self.settings.triangle_size * 2),  # left side point
-            (self.settings.triangle_size * 2,self.settings.triangle_size * 2, ),  # right side point
+            (self.settings.triangle_size * 2, self.settings.triangle_size * 2),  # right side point
         ]
         pygame.draw.polygon(image, self.settings.colors["white"], points)
         return image
@@ -61,7 +69,6 @@ class Spaceship(pygame.sprite.Sprite):
             self.last_shot = pygame.time.get_ticks()
             return True
         return False
-            
 
     def fire_projectile(self):
         """Creates and fires a projectile."""
@@ -77,34 +84,58 @@ class Spaceship(pygame.sprite.Sprite):
         # need to add the projectile to the group to make sure it is updated.
         self.game.add(new_projectile)
 
+    # Handle input separately so the update method stays organized.
+    def handle_input(self):
+        """Handle input from the player."""
 
-    # The Sprite class defines an update method that is called every frame. We
-    # can override this method to add our own functionality. In this case, we
-    # are going to handle input and update the image of the spaceship. However,
-    # we also need to call the update method of the parent class, so we use
-    # super().update()
-    def update(self):
-        
         keys = pygame.key.get_pressed()
 
+        # Accelerate forward when the up arrow key is pressed.
+        if keys[pygame.K_UP]:
+            # Create a vector pointing in the direction the spaceship is facing.
+            direction = pygame.Vector2(0, -1).rotate(self.angle)
+
+            # Add acceleration to the current velocity.
+            # This allows the spaceship to build up speed over time.
+            self.velocity += direction * self.acceleration
+
+        # Rotate the spaceship left and right.
         if keys[pygame.K_LEFT]:
             self.angle -= 5
 
         if keys[pygame.K_RIGHT]:
             self.angle += 5
 
+        # Fire projectiles when the space bar is pressed.
         if keys[pygame.K_SPACE] and self.ready_to_shoot():
             self.fire_projectile()
 
+    def update_angle(self):
+        """Update the angle of the spaceship."""
+
+        # Rotate the spaceship image to match its angle.
         self.image = pygame.transform.rotate(self.original_image, -self.angle)
 
         # Reassigning the rect because the image has changed.
+        # Keep the spaceship centered while the image rotates.
         self.rect = self.image.get_rect(center=self.rect.center)
-        
-        self.rect.center += self.velocity
 
-        # Dont forget this part! If you don't call the Sprite update method, the
-        # sprite will not be drawn
+    def update_position(self):
+        """Update the position of the spaceship."""
+
+        # Move the spaceship according to its velocity.
+        self.rect.center += self.velocity
+        self.velocity *= 0.98
+    # The Sprite class defines an update method that is called every frame. We
+    # override this method to add our own functionality.
+    def update(self):
+
+        self.handle_input()
+        self.update_angle()
+        self.update_position()
+
+        # Don't forget this part! If you don't call the Sprite update method,
+        # the sprite will not be drawn.
         super().update()
 
     # WAIT! Where is the draw method? We don't need to define it because the
@@ -112,7 +143,6 @@ class Spaceship(pygame.sprite.Sprite):
     # screen. We only need to add the sprite to a group and the group will take
     # care of drawing the sprite.
 
-        
 
 class Projectile(pygame.sprite.Sprite):
     """Class to handle projectile movement and drawing."""
@@ -128,7 +158,7 @@ class Projectile(pygame.sprite.Sprite):
         # by the velocity (scalar) to get the final velocity vector.
         self.velocity = pygame.Vector2(0, -1).rotate(angle) * velocity
 
-        # Dont forget to create the image and rect attributes for the sprite
+        # Don't forget to create the image and rect attributes for the sprite.
         self.image = pygame.Surface(
             (self.settings.projectile_size, self.settings.projectile_size),
             pygame.SRCALPHA,
@@ -143,7 +173,7 @@ class Projectile(pygame.sprite.Sprite):
             radius=half_size,
         )
 
-        # Notice that we are using the rect attribute to store the position of the projectile
+        # Notice that we are using the rect attribute to store the position of the projectile.
         self.rect = self.image.get_rect(center=position)
 
     def update(self):
@@ -156,10 +186,11 @@ class Game:
     def __init__(self, settings):
         pygame.init()
         pygame.key.set_repeat(1250, 1250)
-        
+
         self.settings = settings
-        self.screen = pygame.display.set_mode((self.settings.width, self.settings.height))
-        
+        self.screen = pygame.display.set_mode(
+            (self.settings.width, self.settings.height)
+        )
 
         pygame.display.set_caption("Really Boring Asteroids")
 
@@ -184,24 +215,22 @@ class Game:
     def update(self):
 
         # We only need to call the update method of the group, and it will call
-        # the update method of all sprites But, we have to make sure to add all
+        # the update method of all sprites. But, we have to make sure to add all
         # of the sprites to the group, so they are updated.
         self.all_sprites.update()
 
     def draw(self):
         self.screen.fill(self.settings.colors["black"])
 
-        # The sprite group has a draw method that will draw all of the sprites in
-        # the group.
+        # The sprite group has a draw method that will draw all of the sprites
+        # in the group.
         self.all_sprites.draw(self.screen)
 
         pygame.display.flip()
 
     def run(self):
         """Main Loop for the game."""
-        
-       
-        
+
         while self.running:
             self.handle_events()
             self.update()

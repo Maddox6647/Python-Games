@@ -31,7 +31,7 @@ FPS = 60
 # Player attributes
 PLAYER_SIZE = 25
 
-player_speed = 9
+player_speed = 15
 
 # Obstacle attributes
 OBSTACLE_WIDTH = 100
