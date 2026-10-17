@@ -20,7 +20,7 @@ class Settings:
 # Sprite. Rather than a plain class, like in the previous examples, this class
 # inherits from the Sprite class. The main additional function of a Sprite is
 # that it can be added and removed from groups. This is useful for handling
-# multiple objects of the same type, like projectiles.
+# multiple objects of the same type, like projectiles or missiles.
 class Spaceship(pygame.sprite.Sprite):
     """Class representing the spaceship."""
 
