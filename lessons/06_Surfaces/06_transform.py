@@ -8,7 +8,7 @@ images = Path(__file__).parent / 'images'
 
 
 
-# Initialize Pygame
+# Initialize Pygamee
 pygame.init()
 
 # Set up the display

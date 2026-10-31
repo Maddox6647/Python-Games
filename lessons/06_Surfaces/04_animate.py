@@ -18,7 +18,7 @@ def scale_sprites(sprites, scale):
     return [pygame.transform.scale(sprite, (sprite.get_width() * scale, sprite.get_height() * scale)) for sprite in sprites]
 
 def main():
-    # Initialize Pygame
+    # Initialize Pygamee
     pygame.init()
 
     # Set up the display
@@ -42,7 +42,7 @@ def main():
     # Variables for animation
     frog_index = 0
     allig_index = 0
-    frames_per_image = 6
+    frames_per_image = 10
     frame_count = 0
 
     # Main game loop
